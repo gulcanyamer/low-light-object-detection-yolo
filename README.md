@@ -8,6 +8,8 @@ the CBAM attention module and image enhancement methods (CLAHE, gamma
 correction, Retinex, Zero-DCE), evaluated on the ExDark, BDD100K, and DAWN
 datasets.
 
+![Project pipeline](assets/Figure_1_2_pipeline.png)
+
 ## Pipeline
 
 1. **Environment setup** ([`src/colab_setup.py`](src/colab_setup.py)) — installs
@@ -18,8 +20,13 @@ datasets.
 3. **Image enhancement** ([`src/enhancement/`](src/enhancement)) — classical
    methods (CLAHE, gamma, single/multi-scale Retinex) and Zero-DCE, a deep
    curve-estimation model ([Li et al., CVPR 2020](https://github.com/Li-Chongyi/Zero-DCE)).
+
+   ![Three enhancement families](assets/Figure_2_3_enhancement_families.png)
+
 4. **CBAM attention** ([`src/models/cbam.py`](src/models/cbam.py)) — channel +
    spatial attention module, inserted into a YOLOv8/Ultralytics backbone.
+
+   ![CBAM architecture](assets/Figure_2_2_CBAM_architecture.png)
 5. **Training** ([`src/train.py`](src/train.py)) — trains a model on a given
    (enhancement method × CBAM on/off) combination, with resume/skip support
    for interrupted Colab sessions.
@@ -53,6 +60,23 @@ python src/train.py --data data/exdark_clahe.yaml --name yolov8s_cbam_clahe \
 python src/visualize_comparison.py --image sample.jpg \
     --checkpoints-dir checkpoints --zero-dce-checkpoint checkpoints/zero_dce.pth
 ```
+
+## Results
+
+Image enhancement alone gives modest gains on ExDark, but combining CBAM
+attention with Zero-DCE enhancement pushes YOLOv8s to its best in-domain
+result (mAP@0.5 = 0.8562):
+
+![Enhancement methods on ExDark](assets/Figure_4_2_enhancement_methods.png)
+![CBAM x enhancement combinations](assets/Figure_4_5_cbam_combinations.png)
+
+That same combination reverses completely on BDD100K (native training),
+becoming the *worst* configuration instead of the best — a synergy that only
+holds in-domain:
+
+![Synergy reversal across domains](assets/Figure_5_2_synergy_reversal.png)
+
+See [`src/generate_figures.py`](src/generate_figures.py) for all 24 report figures.
 
 ## Notes
 

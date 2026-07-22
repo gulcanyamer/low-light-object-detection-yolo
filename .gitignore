@@ -1,0 +1,16 @@
+# Datasets and generated artifacts
+data/
+results/
+checkpoints/
+*.pt
+*.pth
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
